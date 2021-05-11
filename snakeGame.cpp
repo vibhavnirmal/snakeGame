@@ -7,7 +7,7 @@ using namespace std;
 
 // global variables
 bool gameOver;
-const int width = 20;
+const int width = 40;
 const int height = 20;
 
 int x, y, fruitX, fruitY, score;
@@ -20,6 +20,7 @@ enum Direction
     UP,
     DOWN
 };
+
 Direction dir;
 
 void Setup()
@@ -81,10 +82,73 @@ void Draw()
 
 void Input()
 {
+    if (_kbhit())
+    {
+        switch (_getch())
+        {
+        case 'a':
+            dir = LEFT;
+            break;
+        case 's':
+            dir = DOWN;
+            break;
+        case 'd':
+            dir = RIGHT;
+            break;
+        case 'w':
+            dir = UP;
+            break;
+        case 'x':
+            gameOver = true;
+            break;
+        }
+    }
 }
 
 void Logic()
 {
+    switch (dir)
+    {
+    case DOWN:
+        y++;
+        break;
+    case LEFT:
+        x--;
+        break;
+    case RIGHT:
+        x++;
+        break;
+    case UP:
+        y--;
+        break;
+    default:
+        break;
+    }
+
+    if (x == fruitX && y == fruitY)
+    {
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                if (i++ == y && j++ == x)
+                {
+                    cout << "o";
+                }
+                else if (i == fruitY && j == fruitX)
+                {
+                    cout << "f";
+                }
+                else
+                {
+                    cout << " ";
+                }
+            }
+            cout << endl;
+        }
+
+        cout << "o";
+    }
 }
 
 int main()
