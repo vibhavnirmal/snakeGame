@@ -1,27 +1,21 @@
 #include <iostream>
 #include <conio.h>
+#include <windows.h>
 
 using namespace std;
 
-// Main 4 functions every time creating a game:> setup draw input logic
-
-// global variables
+// global variables_________
 bool gameOver;
 const int width = 40;
 const int height = 20;
-
 int x, y, fruitX, fruitY, score;
-
-enum Direction
-{
-    STOP = 0,
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN
-};
-
+int tailX[100], tailY[100];
+int nTail;
+enum Direction { STOP = 0, LEFT, RIGHT, UP, DOWN };
 Direction dir;
+// _________________________
+
+// Main 4 functions every time creating a game:> setup draw input logic
 
 void Setup()
 {
@@ -68,7 +62,16 @@ void Draw()
             }
             else
             {
-                cout << " ";
+                bool print = false;
+                for (int k=0; k< nTail; k++){
+                    if (tailX[k] == j && tailY[k] == i)
+                    {
+                        cout << "o";
+                        print = true;
+                    }
+                }
+                if (!print)
+                    cout << " ";
             }
         }
         cout << endl;
@@ -78,6 +81,7 @@ void Draw()
         cout << "#";
 
     cout << endl;
+    cout << "SCORE:" << score << endl;
 }
 
 void Input()
@@ -87,16 +91,36 @@ void Input()
         switch (_getch())
         {
         case 'a':
-            dir = LEFT;
+            if(dir == RIGHT){
+                break;
+            }
+            else{
+                dir = LEFT;
+            }
             break;
         case 's':
-            dir = DOWN;
+            if (dir == UP){
+                break;
+            }
+            else{
+                dir = DOWN;
+            }
             break;
         case 'd':
-            dir = RIGHT;
+            if(dir == LEFT){
+                break;
+            }
+            else{
+                dir = RIGHT;
+            }
             break;
         case 'w':
-            dir = UP;
+            if(dir == DOWN){
+                break;
+            }
+            else{
+                dir = UP;
+            }
             break;
         case 'x':
             gameOver = true;
@@ -107,6 +131,26 @@ void Input()
 
 void Logic()
 {
+    int prev2X, prev2Y;
+    
+    int prevX = tailX[0];
+    int prevY = tailY[0];
+
+    tailX[0] = x;
+    tailY[0] = y;
+    
+    for (int i =1; i<nTail; i++)
+    {
+        prev2X = tailX[i];
+        prev2Y = tailY[i];
+
+        tailX[i] = prevX;
+        tailY[i] = prevY;
+
+        prevX = prev2X;
+        prevY = prev2Y;
+    }
+
     switch (dir)
     {
     case DOWN:
@@ -125,14 +169,24 @@ void Logic()
         break;
     }
 
-    if (x == 0 || x == width || y == 0 || y == height)
+    if (x < 0 || x > width || y < 0 || y > height)
     {
         gameOver = true;
     }
 
+    for (int i=0; i<nTail; i++){
+        if (tailX[i] == x && tailY[i] == y)
+        {
+            gameOver = true;
+        }
+    }
+
     if (x == fruitX && y == fruitY)
     {
-        cout << "o";
+        score += 10;
+        fruitX = rand() % width;
+        fruitY = rand() % height;
+        nTail++;
     }
 }
 
@@ -144,6 +198,9 @@ int main()
         Draw();
         Input();
         Logic();
+        Sleep(10);
     }
     return 0;
 }
+
+// Thank you https://www.youtube.com/watch?v=E_-lMZDi7Uw for amazing tutorial
