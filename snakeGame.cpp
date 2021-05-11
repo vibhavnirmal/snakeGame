@@ -125,28 +125,13 @@ void Logic()
         break;
     }
 
+    if (x == 0 || x == width || y == 0 || y == height)
+    {
+        gameOver = true;
+    }
+
     if (x == fruitX && y == fruitY)
     {
-        for (int i = 0; i < height; i++)
-        {
-            for (int j = 0; j < width; j++)
-            {
-                if (i++ == y && j++ == x)
-                {
-                    cout << "o";
-                }
-                else if (i == fruitY && j == fruitX)
-                {
-                    cout << "f";
-                }
-                else
-                {
-                    cout << " ";
-                }
-            }
-            cout << endl;
-        }
-
         cout << "o";
     }
 }
